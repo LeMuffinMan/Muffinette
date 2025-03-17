@@ -1,8 +1,12 @@
 # 🧁 Muffinette - A MiniCLI for a MiniTester for a MiniShell 
 
-Muffinette is a suite of Bash scripts I’m developing using a Test-Driven Development (TDD) approach as part of my preparation for the 42 minishell project.
+Muffinette is a suite of Bash scripts I’m developing using a Test-Driven Development (TDD) approach as part of my preparation for the 42 minishell project. 
 
-It includes core features to streamline testing, along with advanced functionalities to deepen my understanding of system programming and Bash scripting—all while having fun along the way!
+It includes core features to streamline testing, along with advanced functionalities written to explore CLI possibilites and deepen my understanding of system programming and Bash scripting.
+
+I hope Muffinette will help you to whip up the perfect minishell recipe!
+
+NOTE : I'm stil working on Muffinette, don't blindly trust it and please let me know if you find any bugs or issues
 
 ---
 ## Table of Contents
@@ -32,7 +36,7 @@ Utility Functions & Customization
 
 <a id="why-muffinette"></a>
 ## Why Muffinette? 🤔 
-Testing a minishell can be tedious:
+Testing a minishell can be as tedious as peeling a mountain of potatoes:
   - Opening multiple terminals.
   - Sending the same inputs to both minishell and Bash.
   - Manually comparing outputs and exit codes.
@@ -42,11 +46,13 @@ Muffinette simplifies this process:
   - Let Muffinette handle the rest—comparing STDOUT, STDERR, exit codes, and even redirections.
   - Optionally, run Valgrind checks to detect memory leaks and errors.
 
+#### _"It's like having a food critic who also checks for hygiene!"_
+
 The muffinette.sh CLI makes testing smoother, offering a user-friendly Command Line Interface to interact with tastor.sh minishell and bash, and customize your testing workflow.
 
-The scripts are designed in a config file style when possible. Experienced Bash users will find in comments all the documentations needed to edit or build on Muffinette.
+The scripts are designed in a config file style when possible. Experienced Bash users will find in comments all the documentations and condiments needed to further refine, edit or build on Muffinette.
 
-Whether you’re running predefined tests or experimenting your own, Muffinette provides the tools and guidance to make testing efficient and painless.
+Whether you’re running predefined tests or experimenting your own, Muffinette provides the tools and guidance to make minishell testing efficient and painless. 
 
 ---
 
@@ -77,12 +83,13 @@ To Use taster.sh without his CLI, see the detailed usage in the **[former README
 ```bash
 ./tastor.sh
 ```
+
 <a id="basic-usage"></a>
 ### Basic usage 🥄
 
 The CLI is designed first for quick tests. 
 
-For a minimalist and straigth-forward usage, let's say you want to see how your minishell handle the "cd .." command :
+For a minimalist and straigthforward usage, let's say you want to see how your minishell handle the "cd .." command :
 ```bash
 [Muffinette]$ pwd
 [Muffinette]$ cd ..
@@ -131,7 +138,8 @@ Exit Muffinette.
 
 `[Muffinette]$ --oops (or -o)`
 
-Removes the last command entered in the sequence buffer.
+Removes the last command entered in the sequence buffer. A step back when you accidentally added too much salt.
+
 ```bash
 [Muffinette]$ pwd
 [Muffinette]$ cd..
