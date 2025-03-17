@@ -1,1 +1,308 @@
-# readmetest
+# 🧁 Muffinette - A MiniCLI for a MiniTester for a MiniShell 
+
+Muffinette is a suite of Bash scripts I’m developing using a Test-Driven Development (TDD) approach as part of my preparation for the 42 minishell project.
+
+It includes core features to streamline testing, along with advanced functionalities to deepen my understanding of system programming and Bash scripting—all while having fun along the way!
+
+---
+## Table of Contents
+- [Features 🍽](#features)
+- [Why Muffinette? 🤔](#why-muffinette)
+- [🧑‍🍳 Usage 👩‍🍳](#usage)
+  - [Quick Start 🍔](#quick-start)
+  - [Basic Usage 🥄](#basic-usage)
+- [CLI Commands 🍴](#cli-commands)
+- [Troubleshooting 🔧](#troubleshooting)
+- [Contribution 🍻](#contribution)
+
+<a id="features"></a>
+## Features 🍽
+
+Main Modules
+
+- tastor.sh: A testing engine for minishell designed to simplify and optimize the testing process.
+- muffinette.sh: A mini-CLI for seamless interaction with tastor.sh, minishell, and Bash, enabling users to customize their testing workflow.
+
+Utility Functions & Customization
+
+- recipes.sh: An automation script for tastor.sh. Define the tests your minishell must pass, add them to recipes.sh, and run it to verify if your minishell meets all requirements.
+- cookware.sh: A collection of utility functions for other scripts. Customize the output of muffinette.sh here.
+
+---
+
+<a id="why-muffinette"></a>
+## Why Muffinette? 🤔 
+Testing a minishell can be tedious:
+  - Opening multiple terminals.
+  - Sending the same inputs to both minishell and Bash.
+  - Manually comparing outputs and exit codes.
+
+Muffinette simplifies this process:
+  - Type your test inputs once.
+  - Let Muffinette handle the rest—comparing STDOUT, STDERR, exit codes, and even redirections.
+  - Optionally, run Valgrind checks to detect memory leaks and errors.
+
+The muffinette.sh CLI makes testing smoother, offering a user-friendly Command Line Interface to interact with tastor.sh minishell and bash, and customize your testing workflow.
+
+The scripts are designed in a config file style when possible. Experienced Bash users will find in comments all the documentations needed to edit or build on Muffinette.
+
+Whether you’re running predefined tests or experimenting your own, Muffinette provides the tools and guidance to make testing efficient and painless.
+
+---
+
+<a id="usage"></a>
+## 👩‍🍳 Usage 🧑‍🍳 
+
+<a id="quick-start"></a>
+### Quick start 🍔
+Clone the repos and copy minishell binary inside it.
+``` bash
+git clone https://github.com/dArchMuffin/Muffinette
+cp /path/to/your/minishell/binary Muffinette/
+```
+From the repo : 
+
+Run the CLI with :
+```bash
+./muffinette.sh
+```
+
+Run the tester with all the tests registered in recipes.sh with :
+```bash
+./recipes.sh
+```
+
+To Use taster.sh without his CLI, see the detailed usage in the **[former README](https://github.com/dArchMuffin/Muffinette/blob/5b1f324/README.md)** and run :
+
+```bash
+./tastor.sh
+```
+<a id="basic-usage"></a>
+### Basic usage 🥄
+
+The CLI is designed first for quick tests. 
+
+For a minimalist and straigth-forward usage, let's say you want to see how your minishell handle the "cd .." command :
+```bash
+[Muffinette]$ pwd
+[Muffinette]$ cd ..
+[Muffinette]$ pwd
+[Muffinette]$ cd ..
+[Muffinette]$ pwd
+[Muffinette]$ cd ..
+[Muffinette]$ pwd
+[Muffinette]$ cd ..
+[Muffinette]$ pwd
+[Muffinette]$ cd ..
+[Muffinette]$ pwd
+[Muffinette]$ cd ..
+[Muffinette]$ 
+STDOUT : OK
+STDERR : OK
+EXIT : OK
+[Muffinette]$ !v
+NO LEAKS
+NO ERRORS
+NO ZOMBIE PROCESS
+FD CLOSED
+STDOUT : OK
+STDERR : OK
+EXIT : OK
+```
+In this example, each line was successives command lines. So when I sent an empty prompt after the last "cd ..", I ran 12 successives inputs to test .
+
+An empty prompt send the sequence to tastor.sh and display the results.
+
+Using the !v command, I ran again the last sequence of command lines, with a valgrind test in addition. I could enable persistantly valgrind check from beginning using --vg or --valgrind.
+
+You can see the output of your minishell with a cat log/minishell_output in your shell, or using the --print=stoud CLI command.
+
+If there is only few CLI commands you need, the --oops and the ! !! !v !> CLI commands are the essentials.
+For extended or fancy usage, see below.
+
+<a id="cli-commands"></a>
+## CLI commands 🍴 
+
+### Core commands 🔪
+
+`[Muffinette]$ bye`
+
+Exit Muffinette.
+
+`[Muffinette]$ --oops (or -o)`
+
+Removes the last command entered in the sequence buffer.
+```bash
+[Muffinette]$ pwd
+[Muffinette]$ cd..
+[Muffinette]$ --oops
+removed : cd..
+[Muffinette]$ --print=seq
+pwd
+```
+`[Muffinette]$ !! `
+
+Immediately run again last sequence with same options.
+
+`[Muffinette]$ ! `
+
+Override your current sequence in buffer with the last sequence used, without running it again immediately.
+
+In case you want to extend the last sequence without retyping it.
+```bash
+[Muffinette]$ --print=seq or -ps
+
+
+[Muffinette]$ !
+pwd
+cd ..
+[Muffinette]$ --print=seq or -ps
+pwd
+cd ..
+```
+`[Muffinette]$ !> `
+
+Runs the last sequence with an additional redirection test.
+
+`[Muffinette]$ !v `
+
+Runs the last sequence with an additional Valgrind memory check.
+
+```bash
+[Muffinette]$ pwd
+[Muffinette]$ 
+STDOUT : OK
+STDERR : OK
+EXIT : OK
+[Muffinette]$ !v
+NO LEAKS
+NO ERRORS
+NO ZOMBIE PROCESS
+FD CLOSED
+STDOUT : OK
+STDERR : OK
+EXIT : OK
+[Muffinette]$ 
+```
+----
+
+### Flag Management commands 🧂
+
+`[Muffinette]$ --valgrind (or -vg)`
+
+Toggles Valgrind memory check mode.
+```bash
+[Muffinette]$ --valgrind
+valgrind_flag = ON
+[Muffinette]$ --valgrind
+valgrind_flag = OFF
+```
+
+`[Muffinette]$ - >`
+
+Toggles redirection testing mode.
+
+`[Muffinette]$ --auto-save`
+
+Toggles automatic saving of test logs. (disabled by default)
+
+### Printing Logs and Sequences 🧾 
+
+`[Muffinette]$ --print=stdout`
+
+Displays the contents of stdout log.
+
+Same for `--print=stderr`, `--print=outfile`, `--print=valgrind`.
+
+
+`[Muffinette]$ --print=flags (or -pf)`
+
+Displays the current state of test flags.
+
+`[Muffinette]$ --print=seq (or -ps)`
+
+Displays the sequence currently stored in the buffer.
+
+`[Muffinette]$ --print=last-seq (or -pls)`
+
+Displays the last executed sequence.
+
+----
+
+### Fancy commands  🍰
+
+The following commands are the result of my own experimentations.
+
+It will open new terminals so make sure to have Gnome terminal installed or tweak the scripts with your terminal.
+
+- `[Muffinette]$ --recipes` Runs custom tests stored in recipes.sh in a new terminal.
+
+- `[Muffinette]$ --bash` or `[Muffinette]$ --minishell` Opens a new terminal with a bash or minishell : so you can use it manualy to operate or see Bash behaviour
+
+- `[Muffinette]$ --watch=stdout` Opens 2 terminals executing the watch command on log/minishell_output and log/bash_output. 
+
+  This option is available for each log file (stderr, outfile, valgrind ...).
+  
+
+You can overview in real time all log files using `[Muffinette]$ --watch=all`
+
+Use `bye` to exit Muffinette and kill all the terminals opened.
+
+If you didn't quit using `bye`, execute in another terminal : 
+
+```bash
+pgrep watch | tail -n +2 | xargs kill
+```
+
+It will kill any watch processus running.
+
+---
+
+## _"One is never better served than by oneself"_ 😋
+
+You will find arround lines to comment, uncomment or to tweak yourself to edit or build on Muffinette.
+
+If you are ready to get your hands dirty, I hope my scripts are commented enough for you to understand how it works. 
+
+Please, share you improvements with us ! 
+
+---
+<a id="troubleshooting"></a>
+## Troubleshooting  🔧
+Normally, muffinette should automaticaly extract from minishell output the prompt and the command sent.
+If STDOUT test always fail, you might need to manualy clean your minishell prompt.
+Edit your code to stick to bash prompt, or edit the muffinette.sh variable PROMPT as follow :
+
+By running your minishell in a here_doc, you will see that its output differs of the bash one because of minishell printing in the STDOUT its output and the user input : 
+```bash
+./minishell << EOF
+pwd
+EOF
+```
+```bash
+[Minishell]$ pwd
+/home/muffin/Muffinette
+[Minishell]$ exit
+```
+Bash only prints the outputs of its inputs :
+```bash
+bash << EOF
+pwd
+EOF
+```
+```bash
+/home/muffin/Muffinette
+```
+So, in order to compare outputs, we need to clean your minishell output.
+
+Execute your minishell with here_doc as described, copy and paste the prompt line in the muffinette.sh PROMPT variable.
+
+```bash
+PROMPT="[Minishell]$"
+```
+---
+
+
+<a id="contribution"></a>
+## Contribution 🍻 _"Everything tastes better when we cook together"_
+Feel free to contribute to Muffinette by submitting pull requests or creating issues.
