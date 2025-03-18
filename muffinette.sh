@@ -8,6 +8,12 @@ YELLOW="\033[0;33m"
 NC="\033[0m"
 
 mkdir -p log
+touch log/outfile
+touch log/minishell_output
+touch log/bash_output
+touch log/minishell_stderr
+touch log/bash_stderr
+touch log/valgrind_output
 
 # Cookware has functions to display infos and set flags
 # customize yourself infos displayed by editing or adding a function in cookware.sh
@@ -19,13 +25,16 @@ AUTO_SAVE_FLAG=0
 VALGRIND_FLAG=0
 R_FLAG=0
 
+if [[ $1 == "--watch=all" ]]; then
+  watch_logs "${1#--watch=}"
+# Pierre tail --follow : voir pour ecraser le dernier log
+  exit
+fi
+
 echo -en "${YELLOW}[Muffinette]\$ ${NC}"
 
 ARGS=()
 
-# As minishell, a CLI takes input from a read in a while
-# A shell allow user to interact with the operating system using command line iterface, such as bash sh dash zsh minishell ...
-# A CLI allow user to interact with a program lighter program than a OS, for example, a tester (tastor.sh) using command line interface 
 while IFS= read -r INPUT; do
 # This sets the Internal Field Separator (IFS) to an empty value, and get from STDIN a string for $INPUT variable.
 # By default, IFS is set to whitespace (space, tab, newline), which causes read to split input into multiple words.
@@ -64,8 +73,9 @@ while IFS= read -r INPUT; do
       ;;
     # -bye : quit and clean
     "bye")
-      pgrep watch | tail -n +2 | xargs kill 2> /dev/null
-      rm -rd log 2> /dev/null
+      # pgrep watch | tail -n +2 | xargs kill 2> /dev/null
+      pgrep terminator | xargs kill
+      # rm -rd log 2> /dev/null
       exit 0
       ;;
     # --watch= : new tty with watch on a log file option
