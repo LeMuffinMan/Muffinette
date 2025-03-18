@@ -121,22 +121,63 @@ watch_logs() {
   case "$1" in
     "off") pgrep watch | tail -n +2 | xargs kill ;;
     "all")
-      kitty --detach bash -c 'watch -n1 cat log/minishell_output'
-      kitty --detach bash -c 'watch -n1 cat log/bash_output'
-      kitty --detach bash -c 'watch -n1 cat log/minishell_stderr'
-      kitty --detach bash -c 'watch -n1 cat log/bash_stderr'
-      kitty --detach bash -c 'watch -n1 cat log/valgrind_output'
-      kitty --detach bash -c 'watch -n1 cat log/outfile' ;;
+      terminator -l muffinette_watch & 2> log/terminator_logs ;;
     "stdout")
-      kitty --detach bash -c 'watch -n1 cat log/minishell_output'
-      kitty --detach bash -c 'watch -n1 cat log/bash_output' ;;
+      gnome-terminal -- bash -c 'watch -n1 cat log/minishell_output'
+      gnome-terminal -- bash -c 'watch -n1 cat log/bash_output' ;;
     "stderr")
-      kitty --detach bash -c 'watch -n1 cat log/minishell_stderr'
-      kitty --detach bash -c 'watch -n1 cat log/bash_stderr' ;;
+      gnome-terminal -- bash -c 'watch -n1 cat log/minishell_stderr'
+      gnome-terminal -- bash -c 'watch -n1 cat log/bash_stderr' ;;
     "valgrind")
-      kitty --detach bash -c 'watch -n1 cat log/valgrind_output' ;;
+      gnome-terminal -- bash -c 'watch -n1 cat log/valgrind_output' ;;
     "outfile")
-      kitty --detach bash -c 'watch -n1 cat log/outfile' ;;
+      gnome-terminal -- bash -c 'watch -n1 cat log/outfile' ;;
   esac
 }
+
+# watch_logs() {
+#   case "$1" in
+#     "off") pgrep watch | tail -n +2 | xargs kill ;;
+#     "all")
+#       gnome-terminal -- bash -c 'watch -n1 cat log/minishell_output'
+#       gnome-terminal -- bash -c 'watch -n1 cat log/bash_output'
+#       gnome-terminal -- bash -c 'watch -n1 cat log/minishell_stderr'
+#       gnome-terminal -- bash -c 'watch -n1 cat log/bash_stderr'
+#       gnome-terminal -- bash -c 'watch -n1 cat log/valgrind_output'
+#       gnome-terminal -- bash -c 'watch -n1 cat log/outfile' ;;
+#     "stdout")
+#       gnome-terminal -- bash -c 'watch -n1 cat log/minishell_output'
+#       gnome-terminal -- bash -c 'watch -n1 cat log/bash_output' ;;
+#     "stderr")
+#       gnome-terminal -- bash -c 'watch -n1 cat log/minishell_stderr'
+#       gnome-terminal -- bash -c 'watch -n1 cat log/bash_stderr' ;;
+#     "valgrind")
+#       gnome-terminal -- bash -c 'watch -n1 cat log/valgrind_output' ;;
+#     "outfile")
+#       gnome-terminal -- bash -c 'watch -n1 cat log/outfile' ;;
+#   esac
+# }
+
+# watch_logs() {
+#   case "$1" in
+#     "off") pgrep watch | tail -n +2 | xargs kill ;;
+#     "all")
+#       kitty --detach bash -c 'watch -n1 cat log/minishell_output'
+#       kitty --detach bash -c 'watch -n1 cat log/bash_output'
+#       kitty --detach bash -c 'watch -n1 cat log/minishell_stderr'
+#       kitty --detach bash -c 'watch -n1 cat log/bash_stderr'
+#       kitty --detach bash -c 'watch -n1 cat log/valgrind_output'
+#       kitty --detach bash -c 'watch -n1 cat log/outfile' ;;
+#     "stdout")
+#       kitty --detach bash -c 'watch -n1 cat log/minishell_output'
+#       kitty --detach bash -c 'watch -n1 cat log/bash_output' ;;
+#     "stderr")
+#       kitty --detach bash -c 'watch -n1 cat log/minishell_stderr'
+#       kitty --detach bash -c 'watch -n1 cat log/bash_stderr' ;;
+#     "valgrind")
+#       kitty --detach bash -c 'watch -n1 cat log/valgrind_output' ;;
+#     "outfile")
+#       kitty --detach bash -c 'watch -n1 cat log/outfile' ;;
+#   esac
+# }
 

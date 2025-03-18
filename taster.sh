@@ -261,4 +261,4 @@ if [[ $CLEAN == 1 && $AUTO_SAVE == 1 ]]; then
   echo "Failed test saved in $FAILED_TEST"
 fi
 
-echo "" > log/outfile
+# echo "" > log/outfile
