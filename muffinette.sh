@@ -74,7 +74,9 @@ while IFS= read -r INPUT; do
     # -bye : quit and clean
     "bye")
       # pgrep watch | tail -n +2 | xargs kill 2> /dev/null
-      pgrep terminator | xargs kill
+      if [[ $(pgrep -q terminator) ]]; then
+        pgrep terminator | xargs kill
+      fi
       # rm -rd log 2> /dev/null
       exit 0
       ;;
