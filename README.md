@@ -1,10 +1,10 @@
-# 🧁 Muffinette - A MiniCLI for a MiniTester for a MiniShell 
+# 🧁 Muffinette - A Minishell Taster
 
 Muffinette is a suite of Bash scripts I’m developing using a Test-Driven Development (TDD) approach as part of my preparation for the 42 minishell project. 
 
 It includes core features to streamline testing, along with advanced functionalities written to explore CLI possibilites and deepen my understanding of system programming and Bash scripting.
 
-I hope Muffinette will help you to whip up the perfect minishell recipe!
+Muffinette is your personal kitchen assistant, entirely homegrown and homemade. I hope it will help you to whip up the perfect minishell recipe!
 
 NOTE : I'm stil working on Muffinette, don't blindly trust it and please let me know if you find any bugs or issues
 
