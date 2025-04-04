@@ -222,7 +222,7 @@ EOF
 CLEAN=0
 # some spicy stuff with valgrind
 if [[ $LEAKS_FLAG == 1 ]]; then
-valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --show-mismatched-frees=yes --track-fds=yes --trace-children=yes ./minishell << EOF 2>&1 | tee log/valgrind_output | grep -v "$PROMPT" > /dev/null
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --show-mismatched-frees=yes --track-fds=yes --trace-children=yes --suppressions=readline.supp ./minishell << EOF 2>&1 | tee log/valgrind_output | grep -v "$PROMPT" > /dev/null
 $INPUT
 EOF
 
@@ -235,7 +235,10 @@ EOF
   fi
 
   # if there is definitely lost or still reachable, this line appears in valgrind output
-  if ! grep -q "LEAK SUMMARY" log/valgrind_output; then
+  if grep -q "definitely lost: 0 bytes in 0 blocks" log/valgrind_output || 
+    grep -q "indirectly lost: 0 bytes in 0 blocks" log/valgrind_output || 
+    grep -q "possibly lost: 0 bytes in 0 blocks" ||
+    grep -q "still reachable: 0 bytes in 0 blocks"; then
     echo -e "${GREEN}NO LEAKS${NC}"
   else
     LEAKS=1

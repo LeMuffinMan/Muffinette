@@ -61,3 +61,14 @@ echo "pwd"
 echo
 recipes "--leaks" "pwd" 
 recipes "--leaks" "pwd with args" 
+# ------------cd------------
+echo
+echo "cd"
+echo
+recipes "--leaks" "cd /" "pwd" "cd /home" "pwd" "cd /home/oelleaum" "pwd" 
+recipes "--leaks" "cd /non_existing_folder"
+recipes "--leaks" "cd /egerg" 
+recipes "--leaks" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" 
+recipes "--leaks" "cd .." "pwd" "cd readmetest" "pwd" 
+recipes "--leaks" "pwd
+cd .." 
