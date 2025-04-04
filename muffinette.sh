@@ -5,42 +5,62 @@
 # I used yellow color to visualy separate the output of muffinette.sh and tastor.sh
 # tastor.sh prints in white, muffinette.sh prints in yellow
 YELLOW="\033[0;33m"
+RED="\033[0;31m"
 NC="\033[0m"
 
+# Uncomment this line to help debugging
+# set -x
+
 mkdir -p log
-touch log/outfile
-touch log/minishell_output
-touch log/bash_output
-touch log/minishell_stderr
-touch log/bash_stderr
-touch log/valgrind_output
 
 # Cookware has functions to display infos and set flags
 # customize yourself infos displayed by editing or adding a function in cookware.sh
 source cookware.sh
 
-# theses variables set autosave, valgrind check and redirection check to disable by default
+# theses variables set timeout duration, valgrind check and redirection check to disable by default
 # just switch it to 1 to enable it by default, or use CLI cmds
-AUTO_SAVE_FLAG=0
+TIMEOUT_DURATION=5
 VALGRIND_FLAG=0
 R_FLAG=0
 
-if [[ $1 == "--watch=all" ]]; then
-  watch_logs "${1#--watch=}"
-# Pierre tail --follow : voir pour ecraser le dernier log
-  exit
+# Here you can enable or disable files existence or permissions by default
+INFILE_FLAG=0
+INFILE_PERM_FLAG=0
+# INFILE_FLAG = 0 means the file will be existing during tests / 1 means it will NOT exist for tests
+# INFILE_PERM_FLAG = 0 means it will be chmod 644 / 1 means chmod 000
+
+FILE1_FLAG=0
+FILE1_PERM_FLAG=0
+
+FILE2_FLAG=0
+FILE2_PERM_FLAG=0
+
+OUTFILE_FLAG=0
+OUTFILE_PERM_FLAG=0
+
+# working on ...
+# AUTO_SAVE_FLAG=0
+
+if [[ $1 == "--muffinator" ]]; then
+  touch log/outfile
+  touch log/minishell_output
+  touch log/bash_output
+  touch log/minishell_stderr
+  touch log/bash_stderr
+  touch log/valgrind_output
+  terminator -l muffinette_watch & 2> /dev/null
+  exit 0
 fi
 
 echo -en "${YELLOW}[Muffinette]\$ ${NC}"
 
 ARGS=()
 
+# As a simple CLI, i used a read in while, with a switch case. Each case corresponding to one command, or an input to 
+# add to the sequence to test if the input does not match any command
+# IFS= and -r allow user to use muffinette prompt exactly the same way he would use bash or minishell
 while IFS= read -r INPUT; do
-# This sets the Internal Field Separator (IFS) to an empty value, and get from STDIN a string for $INPUT variable.
-# By default, IFS is set to whitespace (space, tab, newline), which causes read to split input into multiple words.
-# This allow user to use Muffinette prompt exactly the same way he would use bash or minishell prompt, 
-# no need to use \ for special characters, or quotes to delimitate arguments 
-# using switch cases makes the code cleaner more lisible and easier to edit
+# see at the end of this script to add your own custom command
   case "$INPUT" in
     # the ! tests are meant to lead tests quickly, loading last sequence back and executing it with an additional option 
     # ! after a test, load back last sequence in buffer
@@ -51,20 +71,29 @@ while IFS= read -r INPUT; do
     # !! after a test, load back and execute last sequence
     "!!")
       set_flags
-      ./taster.sh "${FLAGS[@]}" "${LAST_SEQ[@]}" 2> /dev/null
+      timeout "${TIMEOUT_DURATION}s" ./taster.sh "${FLAGS[@]}" "${LAST_SEQ[@]}" 2> /dev/null
+      if [[ $? -eq 124 ]]; then
+        echo -e "${RED}TIME OUT !${NC}"
+      fi
       ;;
     # !! after a test, load back and execute last sequence with a valgrind test
     "!v")
       VALGRIND_FLAG=1
       set_flags
-      ./taster.sh "${FLAGS[@]}" "${LAST_SEQ[@]}" 2> /dev/null
+      timeout "${TIMEOUT_DURATION}s" ./taster.sh "${FLAGS[@]}" "${LAST_SEQ[@]}" 2> /dev/null
+      if [[ $? -eq 124 ]]; then
+        echo -e "${RED}TIME OUT !${NC}"
+      fi
       VALGRIND_FLAG=0
       ;;
     # !! after a test, load back and execute last sequence with a redirection test
     "!>")
       R_FLAG=1
       set_flags
-      ./taster.sh "${FLAGS[@]}" "${LAST_SEQ[@]}" 2> /dev/null
+      timeout "${TIMEOUT_DURATION}s" ./taster.sh "${FLAGS[@]}" "${LAST_SEQ[@]}" 2> /dev/null
+      if [[ $? -eq 124 ]]; then
+        echo -e "${RED}TIME OUT !${NC}"
+      fi
       R_FLAG=0
       ;;
     # -h --help : dispaly help
@@ -72,25 +101,26 @@ while IFS= read -r INPUT; do
       print_help
       ;;
     # -bye : quit and clean
-    "bye")
-      # pgrep watch | tail -n +2 | xargs kill 2> /dev/null
-      if [[ $(pgrep -q terminator) ]]; then
-        pgrep terminator | xargs kill
-      fi
-      # rm -rd log 2> /dev/null
+    "bye"|"quit")
+      pgrep watch | tail -n +2 | xargs kill 2> /dev/null
+      # pkill -f "muffinette.sh" 2> /dev/null
+      # if [[ ! -z log/file_without_permissions ]]; then
+      #   chmod 644 log/file_without_permissions
+      # fi
+      rm -rf log 2> /dev/null
       exit 0
       ;;
     # --watch= : new tty with watch on a log file option
     # see README for details
-    "--auto-save")
-      if [[ $AUTO_SAVE_FLAG == 1 ]]; then
-        AUTO_SAVE_FLAG=0
-      else
-        AUTO_SAVE_FLAG=1
-      fi
-      ;;
-    "--watch="*)
-      watch_logs "${INPUT#--watch=}"
+    # "--auto-save")
+      # if [[ $AUTO_SAVE_FLAG == 1 ]]; then
+        # AUTO_SAVE_FLAG=0
+      # else
+        # AUTO_SAVE_FLAG=1
+      # fi
+      # ;;
+    "--muffinator")
+      terminator -l muffinette_watch & 2> /dev/null
       ;;
     # --print=* : print log file
     "--print=stdout")
@@ -131,7 +161,7 @@ while IFS= read -r INPUT; do
       ;;
       # run muffinette.sh with your custom tests in recipes.sh
     "--recipes")
-      kitty --detach bash -c './recipes.sh; read'
+      ./recipes.sh
       ;;
       # open a new tty with a bash shell
     "--bash")
@@ -152,25 +182,83 @@ while IFS= read -r INPUT; do
         unset 'ARGS[-1]'
       fi
       ;;
+      # This bloc sets switches for existing files and permissions
+    "--infile")
+      INFILE_FLAG=$((1 - INFILE_FLAG))
+      echo -e "${YELLOW}infile existing = $( [[ $INFILE_FLAG -eq 0 ]] && echo ON || echo OFF )${NC}"
+      ;;
+    "--infile-perm")
+      INFILE_PERM_FLAG=$((1 - INFILE_PERM_FLAG))
+      echo -e "${YELLOW}infile perm = $( [[ $INFILE_PERM_FLAG -eq 0 ]] && echo ON || echo OFF )${NC}"
+      ;;
+    "--file1")
+      FILE1_FLAG=$((1 - FILE1_FLAG))
+      echo -e "${YELLOW}file1 existing = $( [[ $FILE1_FLAG -eq 0 ]] && echo ON || echo OFF )${NC}"
+      ;;
+    "--file1-perm")
+      FILE1_PERM_FLAG=$((1 - FILE1_PERM_FLAG))
+      echo -e "${YELLOW}file1 perm = $( [[ $FILE1_PERM_FLAG -eq 0 ]] && echo ON || echo OFF )${NC}"
+      ;;
+    "--file2")
+      FILE2_FLAG=$((1 - FILE2_FLAG))
+      echo -e "${YELLOW}file2 existing = $( [[ $FILE2_FLAG -eq 0 ]] && echo ON || echo OFF )${NC}"
+      ;;
+    "--file2-perm")
+      FILE2_PERM_FLAG=$((1 - FILE2_PERM_FLAG))
+      echo -e "${YELLOW}file2 perm = $( [[ $FILE2_PERM_FLAG -eq 0 ]] && echo ON || echo OFF )${NC}"
+      ;;
+    "--outfile")
+      OUTFILE_FLAG=$((1 - OUTFILE_FLAG))
+      echo -e "${YELLOW}outfile existing = $( [[ $OUTFILE_FLAG -eq 0 ]] && echo ON || echo OFF )${NC}"
+      ;;
+    "--outfile-perm")
+      OUTFILE_PERM_FLAG=$((1 - OUTFILE_PERM_FLAG))
+      echo -e "${YELLOW}outfile perm = $( [[ $OUTFILE_PERM_FLAG -eq 0 ]] && echo ON || echo OFF )${NC}"
+      ;;
+      # after a test use ! and then --add-recipe to add last squence tested to recipes.sh 
+    "--add-recipe")
+      if [[ ${#ARGS[@]} -ne 0 ]]; then 
+        set_flags
+        echo -n 'recipes ' >> recipes.sh
+        for FLAG in "${FLAGS[@]}"; do
+          printf '"%s" ' "$(echo "$FLAG" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\$/\\$/g' -e 's/`/\\`/g')" >> recipes.sh
+        done
+        for ARG in "${ARGS[@]}"; do
+          printf '"%s" ' "$(echo "$ARG" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\$/\\$/g' -e 's/`/\\`/g')" >> recipes.sh
+        done
+        echo >> recipes.sh
+        echo -e "${YELLOW}${ARGS[@]}\nadded to recipes${NC}"
+        echo
+      else
+        echo -n 'recipes ' >> recipes.sh
+        for ARG in "${LAST_SEQ[@]}"; do
+          printf '"%s" ' "$(echo "$ARG" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\$/\\$/g' -e 's/`/\\`/g')" >> recipes.sh
+        done
+        echo >> recipes.sh
+        echo -e "${YELLOW}${LAST_SEQ[@]}\nadded to recipes${NC}"
+        echo
+      fi
+      ;;
       # add your custom cmd here
       #"--cmd")
       #<execution>
       #<execution>
       #;;
-      # ...
-      # DO NOT override following cases ! "" and * must be the lasts
-      #
+      
       # no input : if the buffer is not empty : the sequence is sent to taster.sh
-      # if the buffer is empy : print a helper
+      # if the buffer is empty : print a helper
     "")
       if [[ ${#ARGS[@]} -eq 0 ]]; then
         echo -e "${YELLOW}No inputs recorded"
         echo ""
-        echo "use -h or --help for usage informations"
+        echo "use -h or --help for usage informations${NC}"
         print_flags
       else
         set_flags
-        ./taster.sh "${FLAGS[@]}" "${ARGS[@]}" 2> /dev/null
+        timeout "${TIMEOUT_DURATION}s" ./taster.sh "${FLAGS[@]}" "${ARGS[@]}" 2> /dev/null
+        if [[ $? -eq 124 ]]; then
+          echo -e "${RED}TIME OUT !${NC}"
+        fi
         LAST_SEQ=("${ARGS[@]}")
         ARGS=()
       fi

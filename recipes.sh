@@ -1,26 +1,63 @@
+
 #!/bin/bash
 
 mkdir -p log
 
-#each argument is an input, use double quotes to delimate it
-./tastor.sh "pwd" "cd" "pwd"
+source cookware.sh
+
+TIMEOUT_DURATION="${TIMEOUT_DURATION:-5}"
+
+# recipes "pwd" "cd" "pwd"
 
 #so make sure to gather arguments
-./tastor.sh "ls -l" "cd .." "ls -l"
+# recipes "ls -l" "cd .." "ls -l"
 
 #test pipe as an argument 
-./tastor.sh "ls -l | wc -l" "pwd"
+# recipes "ls -l | wc -l" "pwd"
 
 #or even a redirection, but dont forget the flag as first argument !
-./tastor.sh "-r" "echo '180g milk' > log/outfile" 
+# recipes "-r" "echo -e '180g milk' > log/outfile" 
 
 #always put the --leaks as flag first !
-./tastor.sh "--leaks" "-ra" "echo '5g vanilla' >> log/outfile"
+# recipes "--leaks" "-r" "echo -e '5g vanilla' >> log/outfile"
 
-#to test quotes, use \" or ' or \' ... 
-./tastor.sh "echo \"two eggs\"" "echo '100g sugar'" 
+#to use quotes, use \" or ' or \' ... 
+# recipes "echo -e \"two eggs\"" "echo -e '100g sugar'" 
 
 #test by yourself !
-# ./tastor.sh "your" "own"
-# ./tastor.sh "t" "e" "s" "t" "S"
+# recipes "your" "own"
+# recipes "t" "e" "s" "t" "S"
 
+# You can either add your own tests here manualy, or you can use the --add-recipe command, 
+# the sequence in buffer will be added after this linesm ready to run with ./recipes.sh or --recipes in CLI. 
+
+# I recommend to keep this file clean and organized by sorting tests in categories here 
+# Comments are your friends !
+# recipes "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." 
+#
+# ==========BUILT-IN==========
+# ------------echo------------
+echo "echo"
+echo
+recipes "--leaks" "echo" 
+recipes "--leaks" "echo -n" 
+recipes "--leaks" "echo -n hello" 
+recipes "--leaks" "echo -n -n -n " 
+recipes "--leaks" "echo -n -n hello" 
+recipes "--leaks" "echo hello" 
+# ------------exit------------
+echo
+echo "exit"
+echo
+recipes "--leaks" "exit" 
+recipes "--leaks" "exit 256" 
+recipes "--leaks" "exit 42" 
+recipes "--leaks" "exit -1" 
+recipes "--leaks" "exit -256" 
+recipes "--leaks" "exit 1 2" 
+# ------------pwd------------
+echo
+echo "pwd"
+echo
+recipes "--leaks" "pwd" 
+recipes "--leaks" "pwd with args" 
