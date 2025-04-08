@@ -185,6 +185,8 @@ ESCAPED_PROMPT=$(printf "%s" "$PROMPT" | sed 's/[]\/$*.^[]/\\&/g')
 
 # now we use sed to remove lines begnning with your minishell prompt
 sed -i "/^$ESCAPED_PROMPT/d" log/minishell_output
+# .* means "everything after"
+sed -i "s/$ESCAPED_PROMPT.*//" log/minishell_output
 # -i edit a file
 # ^ lines beginning with 
 # /d deletion
@@ -235,10 +237,10 @@ EOF
   fi
 
   # if there is definitely lost or still reachable, this line appears in valgrind output
-  if grep -q "definitely lost: 0 bytes in 0 blocks" log/valgrind_output || 
-    grep -q "indirectly lost: 0 bytes in 0 blocks" log/valgrind_output || 
-    grep -q "possibly lost: 0 bytes in 0 blocks" ||
-    grep -q "still reachable: 0 bytes in 0 blocks"; then
+  if grep -q "definitely lost: 0 bytes in 0 blocks" log/valgrind_output && 
+    grep -q "indirectly lost: 0 bytes in 0 blocks" log/valgrind_output && 
+    grep -q "possibly lost: 0 bytes in 0 blocks" log/valgrind_output &&
+    grep -q "still reachable: 0 bytes in 0 blocks" log/valgrind_output; then
     echo -e "${GREEN}NO LEAKS${NC}"
   else
     LEAKS=1
@@ -306,8 +308,19 @@ fi
 if [[ $(grep -i "No such file or directory" log/bash_stderr | wc -l) != $(grep -i "No such file or directory" log/minishell_stderr | wc -l) ]]; then
   ERROR_MISSING=1
 fi
+if [[ $(grep -i "Not a directory" log/bash_stderr | wc -l) != $(grep -i "Not a directory" log/minishell_stderr | wc -l) ]]; then
+  ERROR_MISSING=1
+fi
+if [[ $(grep -i "numeric argument required" log/bash_stderr | wc -l) != $(grep -i "numeric argument required" log/minishell_stderr | wc -l) ]]; then
+  ERROR_MISSING=1
+fi
+if [[ $(grep -i "exit: too many arguments" log/bash_stderr | wc -l) != $(grep -i "exit: too many arguments" log/minishell_stderr | wc -l) ]]; then
+  ERROR_MISSING=1
+fi
+if [[ $(<log/bash_stderr | wc -l) -ne $(<log/minishell_stderr | wc -l) ]]; then
+  ERROR_MISSING=1
+fi
 # grep les no newline at end of file 
-# ajouter exit : too many arguments
 # //too many files open
 
 if [[ $ERROR_MISSING != 0 ]]; then

@@ -129,7 +129,7 @@ while IFS= read -r INPUT; do
     "--print=stderr")
       print_stderr
       ;;
-    "--print=valgrind")
+    "--print=valgrind"|"-pvg")
       cat log/valgrind_output
       ;;
     "--print=outfile")
@@ -161,7 +161,7 @@ while IFS= read -r INPUT; do
       ;;
       # run muffinette.sh with your custom tests in recipes.sh
     "--recipes")
-      ./recipes.sh
+      ./recipes.sh 2> /dev/null
       ;;
       # open a new tty with a bash shell
     "--bash")
@@ -238,6 +238,16 @@ while IFS= read -r INPUT; do
         echo -e "${YELLOW}${LAST_SEQ[@]}\nadded to recipes${NC}"
         echo
       fi
+      ;;
+      "--bake-re"|"!br")
+        make -C ../Minishell && cp ../Minishell/minishell .
+        if [[ $? -eq 0 ]]; then
+          set_flags
+          timeout "${TIMEOUT_DURATION}s" ./taster.sh "${FLAGS[@]}" "${LAST_SEQ[@]}" 2> /dev/null
+          if [[ $? -eq 124 ]]; then
+            echo -e "${RED}TIME OUT !${NC}"
+          fi
+        fi
       ;;
       # add your custom cmd here
       #"--cmd")

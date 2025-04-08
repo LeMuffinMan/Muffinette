@@ -45,6 +45,7 @@ recipes "--leaks" "echo -n hello"
 recipes "--leaks" "echo -n -n -n " 
 recipes "--leaks" "echo -n -n hello" 
 recipes "--leaks" "echo hello" 
+recipes "--leaks" "echo hello world" 
 # ------------exit------------
 echo
 echo "exit"
@@ -55,6 +56,8 @@ recipes "--leaks" "exit 42"
 recipes "--leaks" "exit -1" 
 recipes "--leaks" "exit -256" 
 recipes "--leaks" "exit 1 2" 
+recipes "--leaks" "exit not_numeric_argument" 
+recipes "--leaks" "exit 1 not_numeric_argument" 
 # ------------pwd------------
 echo
 echo "pwd"
@@ -65,10 +68,13 @@ recipes "--leaks" "pwd with args"
 echo
 echo "cd"
 echo
+recipes "--leaks" "cd" 
 recipes "--leaks" "cd /" "pwd" "cd /home" "pwd" "cd /home/oelleaum" "pwd" 
 recipes "--leaks" "cd /non_existing_folder"
 recipes "--leaks" "cd /egerg" 
 recipes "--leaks" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" 
 recipes "--leaks" "cd .." "pwd" "cd readmetest" "pwd" 
-recipes "--leaks" "pwd
-cd .." 
+recipes "--leaks" "pwd" "cd .." 
+recipes "--leaks" "cd .." "cd " 
+recipes "--leaks" "cd minishell" 
+recipes "--leaks" "cd fwef feww" 
