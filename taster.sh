@@ -228,8 +228,8 @@ valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --show-mism
 $INPUT
 EOF
 
+cp log/valgrind_output vg.txt
   LEAKS=0
-
   # Basicaly, if we find this line in the log file, it means there's a segfault, so print in red KO etc...
   if grep -q "Process terminating with default action of signal 11 (SIGSEGV)" log/valgrind_output; then
     echo -e "${RED}SEGMENTATION FAULT !${NC}"
@@ -266,7 +266,7 @@ EOF
   fi
 
   # This line is found only if there is at least one fd still open at exit in a processm excluding the 3 standards ones
-  if [[ $(grep -v "Open file descriptors" log/valgrind_output) ]]; then
+  if [[ ! $(grep -q "Open file descriptors" log/valgrind_output) ]]; then
     echo -e "${GREEN}FD CLOSED${NC}"
   else
     LEAKS=1
