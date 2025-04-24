@@ -10,8 +10,13 @@ CYAN='\033[0;36m'
 # this function runs the taster with the tests listed in recipes 
 recipes()
 {
+
   OUTPUT=$(timeout "${TIMEOUT_DURATION}s" ./taster.sh "$@" | sed -r 's/\x1B\[[0-9;]*m//g') 
 
+  if [ $EXIT_CODE -eq 124 || -z "$OUTPUT" ]; then
+    echo "${RED}TIME OUT !$NC"
+  fi
+  
   FILTERED_ARGS=()
 
   while [[ $# -gt 0 ]]; do
@@ -89,6 +94,12 @@ recipes()
     echo
     KO=1
   fi
+
+  # if echo -e "$TASTOR" | grep -q "TIME OUT"; then
+  #   echo -en "${FILTERED_ARGS[@]} ${RED}TIME OUT !$NC"
+  #   echo
+  #   KO=1
+  # fi
 
   if [[ $KO == 0 ]]; then
     echo -en "${FILTERED_ARGS[@]} :$GREEN OK$NC"
