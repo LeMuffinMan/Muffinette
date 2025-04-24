@@ -37,6 +37,7 @@ TIMEOUT_DURATION="${TIMEOUT_DURATION:-5}"
 #
 # ==========BUILT-IN==========
 # ------------echo------------
+echo -e "${RED}WARNING ! TIME OUT NOT DETECTED IN RECIPES.SH !!$NC"
 echo "echo"
 echo
 recipes "--leaks" "echo" 
@@ -51,6 +52,7 @@ echo
 echo "exit"
 echo
 recipes "--leaks" "exit" 
+echo "In interactive mode, bash doesn't print \"exit\" in STDOUT, this test must be done manualy"
 recipes "--leaks" "exit 256" 
 recipes "--leaks" "exit 256999999999999999999999999999999999999999999999999999999999999999999999999999999999999999" 
 recipes "--leaks" "exit 42" 
@@ -83,3 +85,4 @@ recipes "cd .." "cd -"
 recipes "cd -" 
 recipes "cd .." "pwd" "cd -" "pwd" "cd .." "pwd" "cd -" "pwd" 
 
+recipes "cd -" "cd -" 

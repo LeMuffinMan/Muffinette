@@ -10,7 +10,6 @@ CYAN='\033[0;36m'
 # this function runs the taster with the tests listed in recipes 
 recipes()
 {
-
   OUTPUT=$(timeout "${TIMEOUT_DURATION}s" ./taster.sh "$@" | sed -r 's/\x1B\[[0-9;]*m//g') 
 
   FILTERED_ARGS=()
