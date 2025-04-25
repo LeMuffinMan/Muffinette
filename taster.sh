@@ -202,7 +202,7 @@ echo "$OLD_FILE1" > log/file1
 echo "$OLD_FILE2" > log/file2
 
 # Execute the same test on bash to have a reference 
-bash --noprofile --norc << EOF 2> /dev/null > log/bash_output
+bash << EOF 2> /dev/null > log/bash_output
 $INPUT
 EOF
 EXIT_CODE_B=$?
@@ -217,7 +217,7 @@ BASH_FILE2=$(<log/file2)
 $INPUT
 EOF
 
-bash --noprofile -norc << EOF 2> log/bash_stderr > /dev/null
+bash << EOF 2> log/bash_stderr > /dev/null
 $INPUT
 EOF
 

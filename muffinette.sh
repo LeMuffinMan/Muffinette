@@ -231,6 +231,9 @@ while IFS= read -r INPUT; do
         echo
       else
         echo -n 'recipes ' >> recipes.sh
+        for FLAG in "${FLAGS[@]}"; do
+          printf '"%s" ' "$(echo "$FLAG" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\$/\\$/g' -e 's/`/\\`/g')" >> recipes.sh
+        done
         for ARG in "${LAST_SEQ[@]}"; do
           printf '"%s" ' "$(echo "$ARG" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\$/\\$/g' -e 's/`/\\`/g')" >> recipes.sh
         done
@@ -270,6 +273,7 @@ while IFS= read -r INPUT; do
           echo -e "${RED}TIME OUT !${NC}"
         fi
         LAST_SEQ=("${ARGS[@]}")
+        LAST_ARGS=("${ARGS[@]}")
         ARGS=()
       fi
       ;;

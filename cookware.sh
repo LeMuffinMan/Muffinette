@@ -13,10 +13,10 @@ recipes()
 
   OUTPUT=$(timeout "${TIMEOUT_DURATION}s" ./taster.sh "$@" | sed -r 's/\x1B\[[0-9;]*m//g') 
 
-  if [ $EXIT_CODE -eq 124 || -z "$OUTPUT" ]; then
-    echo "${RED}TIME OUT !$NC"
-  fi
-  
+  KO=0
+
+ 
+
   FILTERED_ARGS=()
 
   while [[ $# -gt 0 ]]; do
@@ -31,8 +31,6 @@ recipes()
     esac
   done
 
-  KO=0
-
 # tester si les flags sont bien pris en compte 
   if [[ $? -eq 124 ]]; then
     echo -e "${FILTERED_ARGS[@]} : ${RED}TIME OUT !${NC}"
@@ -40,6 +38,10 @@ recipes()
   fi
   TASTOR=$(echo -e "$OUTPUT")
 
+  if [[ -z $OUTPUT ]]; then
+    echo -e "${FILTERED_ARGS[@]} : ${RED}TIME OUT !$NC"
+    KO=1
+  fi
 
   if echo -e "$TASTOR" | grep -q "STDOUT : KO"; then
     echo -en "${FILTERED_ARGS[@]} : STDOUT :$RED KO$NC"
@@ -95,11 +97,11 @@ recipes()
     KO=1
   fi
 
-  # if echo -e "$TASTOR" | grep -q "TIME OUT"; then
-  #   echo -en "${FILTERED_ARGS[@]} ${RED}TIME OUT !$NC"
-  #   echo
-  #   KO=1
-  # fi
+  if echo -e "$TASTOR" | grep -q "TIME OUT !"; then
+    echo -en "${FILTERED_ARGS[@]} ${RED}TIME OUT !$NC"
+    echo
+    KO=1
+  fi
 
   if [[ $KO == 0 ]]; then
     echo -en "${FILTERED_ARGS[@]} :$GREEN OK$NC"
