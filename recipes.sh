@@ -153,7 +153,7 @@ recipes "-r" "< log/infile cat"
 recipes "-r" "cat < log/infile"
 recipes "-r" "< log/infile"
 echo
-echo -e "${YELLOW}append$NC" c
+echo -e "${YELLOW}append$NC"
 recipes "-r" "whoami >> log/outfile"
 recipes "-r" "whoami > log/outfile" "whoami >> log/outfile"
 echo
