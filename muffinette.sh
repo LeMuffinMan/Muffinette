@@ -160,7 +160,16 @@ while IFS= read -r INPUT; do
       echo -e "$NC"
       ;;
       # run muffinette.sh with your custom tests in recipes.sh
+    "--recipes-leaks")
+      if ! grep "recipes \"--leaks\"" recipes.sh > /dev/null; then
+        sed -i "s/recipes/recipes \"--leaks\"/g" recipes.sh > /dev/null
+      fi
+      ./recipes.sh 2> /dev/null
+      ;;
     "--recipes")
+      if grep "recipes \"--leaks\"" recipes.sh > /dev/null; then
+        sed -i "s/recipes \"--leaks\"/recipes/g" recipes.sh > /dev/null
+      fi
       ./recipes.sh 2> /dev/null
       ;;
       # open a new tty with a bash shell
