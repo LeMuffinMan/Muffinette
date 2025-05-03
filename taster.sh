@@ -249,7 +249,7 @@ cp log/valgrind_output vg.txt
 
   # conditionnal jump or invalid read of size will prevent this line to appear on the valgrind output
   # Here we will have all children reports, so we need to clean first the "expected outputs" for the line "ERROR SUMMARY" and if we still find a line "ERROR SUMMARY" it can be only errors
-  NB_ERR=$(grep -v "ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)" log/valgrind_output | grep "ERROR SUMMARY: " | wc -l)
+  NB_ERR=$(grep -v "ERROR SUMMARY: 0 errors from 0 contexts" log/valgrind_output | grep "ERROR SUMMARY: " | wc -l)
     if [[ $NB_ERR == 0 ]]; then
     echo -e "${GREEN}NO ERRORS${NC}"
   else
