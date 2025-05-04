@@ -317,6 +317,9 @@ fi
 if [[ $(grep -i "exit: too many arguments" log/bash_stderr | wc -l) != $(grep -i "exit: too many arguments" log/minishell_stderr | wc -l) ]]; then
   ERROR_MISSING=1
 fi
+if [[ $(grep -i "syntax error" log/bash_stderr | wc -l) != $(grep -i "syntax error" log/minishell_stderr | wc -l) ]]; then
+  ERROR_MISSING=1
+fi
 if [[ $(<log/bash_stderr | wc -l) -ne $(<log/minishell_stderr | wc -l) ]]; then
   ERROR_MISSING=1
 fi
