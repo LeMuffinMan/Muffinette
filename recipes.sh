@@ -51,6 +51,7 @@ TIMEOUT_DURATION="${TIMEOUT_DURATION:-5}"
 # des espaces dans le prompt
 # minishell dans minishell
 # recipes "cd log" "pwd" "mkdir -p test/b/c" "cd test/b/c" "pwd" "cd ../../../" "pwd" "rm -rf test" 
+# encho "source /home/oelleaum/.minishellrc" > /home/oelleaum/.minishellrc -> ce test ne renvoie pas l'erreur ??
 #
 # combo : pipes redirs && epands
 #
@@ -230,6 +231,15 @@ recipes "-r" "< log/infile cat | cat | < log/infile cat | cat | wc -l | cat > lo
 # echo 
 # echo "Expands"
 # echo 
+echo 
+echo "MISC"
+echo 
 recipes "mkdir a" "mkdir b" "cd a" "cd ../b" "rm -rf ../a" "cd -" "cd .." "rm -rf b" 
 recipes "mkdir -p a/b/c" "cd a/b/c" "rm -rf ../../../a" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" 
 recipes "echo > /home/muffin/.file" 
+#
+# Abidolet tests :
+# recipes "echo -nnnnnnnnnnnnnnnnnnnnnnnnnnn" 
+# recipes "export VAR=VAR @=lol VAR1=VAR1" 
+# recipes "export VAR=VAR @=lol VAR1=VAR1 @=lolilol" 
+# recipes "export VAR=\"echo hi | sleep 3\"" "export | grep VAR" 
