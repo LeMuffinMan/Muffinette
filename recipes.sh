@@ -230,3 +230,6 @@ recipes "-r" "< log/infile cat | cat | < log/infile cat | cat | wc -l | cat > lo
 # echo 
 # echo "Expands"
 # echo 
+recipes "mkdir a" "mkdir b" "cd a" "cd ../b" "rm -rf ../a" "cd -" "cd .." "rm -rf b" 
+recipes "mkdir -p a/b/c" "cd a/b/c" "rm -rf ../../../a" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" 
+recipes "echo > /home/muffin/.file" 
