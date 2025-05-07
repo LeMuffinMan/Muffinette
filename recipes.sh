@@ -47,6 +47,11 @@ TIMEOUT_DURATION="${TIMEOUT_DURATION:-5}"
 # mkdir -p a/b/c; cd a/b/c; rm -rf ../../a; pwd; cd ..; pwd; cd ..; pwd; cd ..; pwd;
 # exit
 # SIGNAUX
+# - dans le prompt
+# - dans un pipe
+# - dans un cat
+# - dans les here_docs
+#
 # des tabulatations CTRL + M et Tab ? demander a Sammy
 # des espaces dans le prompt
 # minishell dans minishell
@@ -124,6 +129,7 @@ recipes "cd"
 recipes "cd /" "pwd" "cd /home" "pwd" "cd /home/oelleaum" "pwd" 
 recipes "cd /non_existing_folder"
 recipes "cd /egerg" 
+echo -e "${YELLOW}fix dans la recherche des binaires dans PATH qui cause ce bug$NC"
 recipes "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" "cd .." "pwd" 
 recipes "pwd" "cd .." "pwd" 
 recipes "cd .." "pwd" "cd " "pwd" 
@@ -214,7 +220,7 @@ recipes "-r" "cat < log/infile > log/outfile"
 # echo 
 #
 echo 
-echo "${YELLOW}combined pipes and redirections$NC"
+echo -e "${YELLOW}combined pipes and redirections$NC"
 echo 
 recipes "-r" "< log/outfile < log/file_without_permissions < log/infile cat | cat | cat | cat | wc -l | cat > log/file1 > log/outfile"
 recipes "-r" "< log/infile cat | cat > log/outfile | cat | cat | wc -l | cat > log/file1"
