@@ -38,8 +38,7 @@ FILE2_PERM_FLAG=0
 OUTFILE_FLAG=0
 OUTFILE_PERM_FLAG=0
 
-# working on ...
-# AUTO_SAVE_FLAG=0
+BK_RECIPE=1
 
 if [[ $1 == "--muffinator" ]]; then
   touch log/outfile
@@ -163,12 +162,14 @@ while IFS= read -r INPUT; do
     "--recipes-leaks")
       if ! grep "recipes \"--leaks\"" recipes.sh > /dev/null; then
         sed -i "s/recipes/recipes \"--leaks\"/g" recipes.sh > /dev/null
+        BK_RECIPE=2
       fi
       ./recipes.sh 2> /dev/null
       ;;
     "--recipes")
       if grep "recipes \"--leaks\"" recipes.sh > /dev/null; then
         sed -i "s/recipes \"--leaks\"/recipes/g" recipes.sh > /dev/null
+        BK_RECIPE=1
       fi
       ./recipes.sh 2> /dev/null
       ;;
@@ -254,10 +255,23 @@ while IFS= read -r INPUT; do
       "--bake-re"|"!br")
         make -C ../Minishell && cp ../Minishell/minishell .
         if [[ $? -eq 0 ]]; then
-          set_flags
-          timeout "${TIMEOUT_DURATION}s" ./taster.sh "${FLAGS[@]}" "${LAST_SEQ[@]}" 2> /dev/null
-          if [[ $? -eq 124 ]]; then
-            echo -e "${RED}TIME OUT !${NC}"
+          echo "ici"
+          if [[ $BK_RECIPE == 1 ]]; then
+            if grep "recipes \"--leaks\"" recipes.sh > /dev/null; then
+              sed -i "s/recipes \"--leaks\"/recipes/g" recipes.sh > /dev/null
+            fi
+            ./recipes.sh 2> /dev/null
+          elif [[ $BK_RECIPE == 2 ]]; then
+            if ! grep "recipes \"--leaks\"" recipes.sh > /dev/null; then
+              sed -i "s/recipes/recipes \"--leaks\"/g" recipes.sh > /dev/null
+            fi
+            ./recipes.sh 2> /dev/null
+          else
+            set_flags
+            timeout "${TIMEOUT_DURATION}s" ./taster.sh "${FLAGS[@]}" "${LAST_SEQ[@]}" 2> /dev/null
+            if [[ $? -eq 124 ]]; then
+              echo -e "${RED}TIME OUT !${NC}"
+            fi
           fi
         fi
       ;;
@@ -276,6 +290,7 @@ while IFS= read -r INPUT; do
         echo "use -h or --help for usage informations${NC}"
         print_flags
       else
+        BK_RECIPE=0
         set_flags
         timeout "${TIMEOUT_DURATION}s" ./taster.sh "${FLAGS[@]}" "${ARGS[@]}" 2> /dev/null
         if [[ $? -eq 124 ]]; then
