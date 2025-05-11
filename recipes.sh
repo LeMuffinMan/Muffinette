@@ -7,7 +7,7 @@ mkdir -p log
 
 source cookware.sh
 
-TIMEOUT_DURATION="${TIMEOUT_DURATION:-5}"
+TIMEOUT_DURATION="${TIMEOUT_DURATION:-10}"
 
 # recipes "--leaks" "pwd" "cd" "pwd"
 

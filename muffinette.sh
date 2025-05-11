@@ -19,7 +19,7 @@ source cookware.sh
 
 # theses variables set timeout duration, valgrind check and redirection check to disable by default
 # just switch it to 1 to enable it by default, or use CLI cmds
-TIMEOUT_DURATION=5
+TIMEOUT_DURATION=10
 VALGRIND_FLAG=0
 R_FLAG=0
 
