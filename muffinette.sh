@@ -252,7 +252,7 @@ while IFS= read -r INPUT; do
         echo
       fi
       ;;
-      "--bake-re"|"!br")
+      "!br")
         make -C ../Minishell && cp ../Minishell/minishell .
         if [[ $? -eq 0 ]]; then
           echo "ici"
@@ -274,6 +274,9 @@ while IFS= read -r INPUT; do
             fi
           fi
         fi
+      ;;
+      "--bake-re")
+        make -C ../Minishell && cp ../Minishell/minishell .
       ;;
       # add your custom cmd here
       #"--cmd")
