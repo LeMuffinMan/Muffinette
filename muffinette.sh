@@ -255,7 +255,6 @@ while IFS= read -r INPUT; do
       "!br")
         make -C ../Minishell && cp ../Minishell/minishell .
         if [[ $? -eq 0 ]]; then
-          echo "ici"
           if [[ $BK_RECIPE == 1 ]]; then
             if grep "recipes \"--leaks\"" recipes.sh > /dev/null; then
               sed -i "s/recipes \"--leaks\"/recipes/g" recipes.sh > /dev/null
