@@ -298,3 +298,11 @@ recipes "export VAR=\"echo hi | sleep 3\"" "export | grep VAR" "\$VAR"
 recipes "export SHLVL+=1 | export grep SHLVL" 
 recipes "export HOME=" "export | grep HOME" 
 recipes "export VA1=\"COUCOU\"" 
+recipes "mkdir a" "mkdir b" "cd a" "cd ../b" "rm -rf ../a" "cd -" "rm -rf ../b" 
+echo 
+echo -e "${YELLOW}Booleans operators $NC"
+echo 
+recipes "true && whoami" 
+recipes "true || whoami" 
+recipes "false && whoami" 
+recipes "false || whoami" 
