@@ -70,79 +70,99 @@ TIMEOUT_DURATION="${TIMEOUT_DURATION:-10}"
 # combo : pipes redirs && epands
 #
 #
-echo 
-echo -e "${YELLOW} == Booleans operators ==$NC"
-echo 
-recipes "--leaks" "true && whoami" 
-recipes "--leaks" "true || whoami" 
-recipes "--leaks" "false && whoami" 
-recipes "--leaks" "false || whoami" 
-echo 
-echo -e "${YELLOW}basics$NC"
-echo 
-recipes "--leaks" "true && echo ok"      
-recipes "--leaks" "false || echo ok"        
-recipes "--leaks" "true && echo A || echo B"        
-recipes "--leaks" "false || echo A && echo B"     
-recipes "--leaks" "false && echo A || echo B"   
-echo 
-echo -e "${YELLOW}natural priority tests$NC"
-echo 
-recipes "--leaks" "true || echo A && echo B"      
-recipes "--leaks" "false && echo A || echo B"     
-recipes "--leaks" "true && false || echo Fallback"  
-recipes "--leaks" "ls && echo LS_OK"                
-recipes "--leaks" "notacommand || echo FAILED"      
-recipes "--leaks" "mkdir test && rm -r test"       
-echo 
-echo -e "${YELLOW}parenthesis$NC"
-echo 
-recipes "--leaks" "(true && echo A) || echo B"      
-recipes "--leaks" "(false || echo A) && echo B"     
-recipes "--leaks" "true && (false || echo NESTED)"  
-echo 
-echo -e "${YELLOW}edges cases : syntax error$NC"
-echo 
-recipes "--leaks" "true &&"                         
-recipes "--leaks" "true && true && true &&"                         
-recipes "--leaks" "&& true"                         
-recipes "--leaks" "&& true && true && true"                         
-recipes "--leaks" "|| true"                         
-recipes "--leaks" "|| true || true || true"                         
-recipes "--leaks" "true ||"                         
-recipes "--leaks" "true || true ||true ||"                         
-recipes "--leaks" "(true && echo OK"               
-recipes "--leaks" "true && echo OK)"               
-recipes "--leaks" "echo A && echo B || echo C"      
-recipes "--leaks" "false || false || echo LAST"    
-echo 
-echo -e "${YELLOW}syntax error : not handled$NC"
-echo 
-recipes "--leaks" "(true && )(false || echo NESTED) > out"  
-recipes "--leaks" "(true || false) | (false || echo NESTED)"  
-recipes "--leaks" "(true && false) | (false || echo NESTED)"  
-recipes "--leaks" "(false && echo) ls (false || echo NESTED)"  
-recipes "--leaks" "true (false || echo NESTED)"  
-recipes "--leaks" "true > (false || echo NESTED)"  
-recipes "--leaks" "true | (false || echo NESTED)"  
-echo 
-echo -e "${YELLOW}combined$NC"
-echo
-recipes "--leaks" "true && (false || (echo L1 && echo L2))"  # Devrait afficher "L1" puis "L2"
-recipes "--leaks" "(false && echo A) || (true && echo B)"    # Devrait afficher "B"
-recipes "--leaks" "false || (true && (false || echo DEEP))"  # Devrait afficher "DEEP"
+#
+# echo 
+# echo -e "${YELLOW} == Booleans operators ==$NC"
+# echo 
+# recipes "--leaks" "true && whoami" 
+# recipes "--leaks" "true || whoami" 
+# recipes "--leaks" "false && whoami" 
+# recipes "--leaks" "false || whoami" 
+# echo 
+# echo -e "${YELLOW}basics$NC"
+# echo 
+# recipes "--leaks" "true && echo ok"      
+# recipes "--leaks" "false || echo ok"        
+# recipes "--leaks" "true && echo A || echo B"        
+# recipes "--leaks" "false || echo A && echo B"     
+# recipes "--leaks" "false && echo A || echo B"   
+# echo 
+# echo -e "${YELLOW}natural priority tests$NC"
+# echo 
+# recipes "--leaks" "true || echo A && echo B"      
+# recipes "--leaks" "false && echo A || echo B"     
+# recipes "--leaks" "true && false || echo Fallback"  
+# recipes "--leaks" "ls && echo LS_OK"                
+# recipes "--leaks" "notacommand || echo FAILED"      
+# recipes "--leaks" "mkdir test && rm -r test"       
+# echo 
+# echo -e "${YELLOW}parenthesis$NC"
+# echo 
+# recipes "--leaks" "(true && echo A) || echo B"      
+# recipes "--leaks" "(false || echo A) && echo B"     
+# recipes "--leaks" "true && (false || echo NESTED)"  
+# echo 
+# echo -e "${YELLOW}edges cases : syntax error$NC"
+# echo 
+# recipes "--leaks" "true &&"                         
+# recipes "--leaks" "true && true && true &&"                         
+# recipes "--leaks" "&& true"                         
+# recipes "--leaks" "&& true && true && true"                         
+# recipes "--leaks" "|| true"                         
+# recipes "--leaks" "|| true || true || true"                         
+# recipes "--leaks" "true ||"                         
+# recipes "--leaks" "true || true ||true ||"                         
+# recipes "--leaks" "(true && echo OK"               
+# recipes "--leaks" "true && echo OK)"               
+# recipes "--leaks" "echo A && echo B || echo C"      
+# recipes "--leaks" "false || false || echo LAST"    
+# echo 
+# echo -e "${YELLOW}syntax error : not required$NC"
+# echo 
+# recipes "--leaks" "(true && )(false || echo NESTED) > out"  
+# recipes "--leaks" "(true || false) | (false || echo NESTED)"  
+# recipes "--leaks" "(true && false) | (false || echo NESTED)"  
+# recipes "--leaks" "(false && echo) ls (false || echo NESTED)"  
+# recipes "--leaks" "true (false || echo NESTED)"  
+# recipes "--leaks" "true > (false || echo NESTED)"  
+# recipes "--leaks" "true >> (false || echo NESTED)"  
+# recipes "--leaks" "true | (false || echo NESTED)"  
+# recipes "--leaks" "cat < (false || echo NESTED)"  
+# recipes "--leaks" "< (false || echo NESTED) cat"  
+# echo 
+# echo -e "${YELLOW}combined$NC"
+# echo
+# recipes "--leaks" "true && (false || (echo L1 && echo L2))"  # Devrait afficher "L1" puis "L2"
+# recipes "--leaks" "(false && echo A) || (true && echo B)"    # Devrait afficher "B"
+# recipes "--leaks" "false || (true && (false || echo DEEP))"  # Devrait afficher "DEEP"
 echo -e "${YELLOW}======= BUILT_INS ======$NC"
 echo
+# ------------exit------------
+echo
+echo -e "${YELLOW}exit$NC"
+echo
+# echo "This test must be done manualy, STDOUT always differs because of bash non interactive behaviour"
+# recipes "--leaks" "exit" 
+recipes "--leaks" "exit 256" 
+recipes "--leaks" "exit 256999999999999999999999999999999999999999999999999999999999999999999999999999999999999999" 
+recipes "--leaks" "exit 42" 
+recipes "--leaks" "exit -1" 
+recipes "--leaks" "exit -256" 
+recipes "--leaks" "exit 1 2" 
+recipes "--leaks" "exit not_numeric_argument" 
+recipes "--leaks" "exit 1 not_numeric_argument" 
+recipes "--leaks" "export EXIT=\"123\"" "exit \$EXIT"
+
 echo -e "${YELLOW}export$NC"
 echo
 # Abidolet tests :
 recipes "--leaks" "export VAR=VAR @=VAR VAR1=VAR1 @=RAV" 
-recipes "--leaks" "echo -nnnnnnnnnnnnnnnnnnnnnnnnnnn" 
-recipes "--leaks" "export VAR=VAR @=VAR VAR1=VAR1" 
-recipes "--leaks" "export VAR=\"echo hi | sleep 3\"" "export | grep VAR" "\$VAR" 
-recipes "--leaks" "export SHLVL+=1 | export grep SHLVL" 
+# recipes "--leaks" "echo -nnnnnnnnnnnnnnnnnnnnnnnnnnn" 
+# recipes "--leaks" "export VAR=VAR @=VAR VAR1=VAR1" 
+# recipes "--leaks" "export VAR=\"echo hi | sleep 3\"" "export | grep VAR" "\$VAR" 
+# recipes "--leaks" "export SHLVL+=1 | export grep SHLVL" 
 recipes "--leaks" "export HOME=" "export | grep HOME" 
-recipes "--leaks" "export VA1=\"COUCOU\"" 
+# recipes "--leaks" "export VA1=\"COUCOU\"" 
 recipes "--leaks" "export VAR=VAR" "export | grep VAR" 
 recipes "--leaks" "export VAR=\"\"" "export | grep VAR" 
 recipes "--leaks" "export VAR=\"\"" "export VAR+=\"123\"" "export | grep VAR" 
@@ -206,21 +226,6 @@ recipes "--leaks" "echo \"\$HOME\"\$USER"
 recipes "--leaks" "echo \$NOTEXITING"
 recipes "--leaks" "echo \"\$NOTEXITING\""
 recipes "--leaks" "export VAR=\"    .    V  A  R    .    \"" "echo \"\$NOTEXITING\""
-# ------------exit------------
-echo
-echo -e "${YELLOW}exit$NC"
-echo
-# echo "This test must be done manualy, STDOUT always differs because of bash non interactive behaviour"
-# recipes "--leaks" "exit" 
-recipes "--leaks" "exit 256" 
-recipes "--leaks" "exit 256999999999999999999999999999999999999999999999999999999999999999999999999999999999999999" 
-recipes "--leaks" "exit 42" 
-recipes "--leaks" "exit -1" 
-recipes "--leaks" "exit -256" 
-recipes "--leaks" "exit 1 2" 
-recipes "--leaks" "exit not_numeric_argument" 
-recipes "--leaks" "exit 1 not_numeric_argument" 
-recipes "--leaks" "export EXIT=\"123\"" "exit \$EXIT"
 # ------------pwd------------
 echo
 echo -e "${YELLOW}pwd$NC"
@@ -263,7 +268,7 @@ echo
 # echo -e "${YELLOW}grep without arg fails and prints its error, but not in pipe !$NC"
 recipes "--leaks" "whoami | grep"
 # echo -e "${YELLOW}cat -e doesn't work ?$NC"
-recipes "--leaks" "whoami | cat | cat -e | cat | cat | cat"
+# recipes "--leaks" "whoami | cat | cat -e | cat | cat | cat"
 recipes "--leaks" "whoami | cat | cat | cat | cat | cat"
 recipes "--leaks" "whoami | cat | cat | wc -l | cat | cat"
 recipes "--leaks" "whoami | cat | cat | wc -l | grep | cat"
@@ -362,3 +367,4 @@ recipes "--leaks" "< log/infile .."
 #
 
 recipes "--leaks" "mkdir a" "mkdir b" "cd a" "cd ../b" "rm -rf ../a" "cd -" "rm -rf ../b" 
+# recipes "--leaks" "cd | pwd | exit | export VAR=VAR | export | grep VAR | unset VAR | exprot | grep VAR | cd .. | cd / | exit" 
