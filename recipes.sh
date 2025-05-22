@@ -117,6 +117,18 @@ recipes "true || true ||true ||"
 recipes "true && echo OK)"               
 recipes "echo A && echo B || echo C"      
 recipes "false || false || echo LAST"    
+echo 
+echo -e "${YELLOW}boolop and exit_code$NC"
+echo 
+recipes "false || echo \$?"               
+recipes "true && echo \$?"
+recipes "cd /root || echo \$?"
+recipes "cd /root && echo \$?"
+recipes "cd /no_exiting_folder && echo \$?"
+recipes "(false && true) || echo \$?"               
+recipes "(false || true) || echo \$?"               
+recipes "(false || true) && echo \$?"               
+
 # echo 
 # echo -e "${YELLOW}syntax error : not required$NC"
 # echo 
@@ -372,3 +384,12 @@ recipes "< log/infile .."
 recipes "mkdir a" "mkdir b" "cd a" "cd ../b" "rm -rf ../a" "cd -" "rm -rf ../b" 
 # recipes "cd | pwd | exit | export VAR=VAR | export | grep VAR | unset VAR | exprot | grep VAR | cd .. | cd / | exit" 
 recipes "false || echo \$?" 
+#PPontet best Prod Man of the YEAR (PPMY) testssss
+recipes "echo -n -nn e" 
+recipes "echo -n -nn -z o" 
+recipes "cd \$HOME/.." "pwd" 
+recipes "cd \$HOME/../." "pwd" 
+recipes "cd 
+ls" "echo \$?" 
+recipes "cd ./././././././././././././log" "pwd" 
+recipes "pwd .. ... ." 
