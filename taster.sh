@@ -322,8 +322,6 @@ if [[ $(grep -i "syntax error" log/bash_stderr | wc -l) != $(grep -i "syntax err
 fi
 if [[ $(grep -i "not a valid identifier" log/bash_stderr | wc -l) != $(grep -i "not a valid identifier" log/minishell_stderr | wc -l) ]]; then
   ERROR_MISSING=1
-  echo '$(grep -i "not a valid identifier" log/bash_stderr)'
-  echo '$(grep -i "not a valid identifier" log/bash_stderr)'
 fi
 
 # if [[ $(grep -i "not a valid identifier" log/bash_stderr | wc -l) != $(grep -i "not a valid identifier" log/minishell_stderr | wc - l) ]]; then
