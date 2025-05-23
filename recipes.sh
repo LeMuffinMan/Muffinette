@@ -59,6 +59,13 @@ TIMEOUT_DURATION="${TIMEOUT_DURATION:-10}"
 # - dans un cat
 # - dans les here_docs
 # - cat | cat | ls : faire un CTRL+C / un CTRL+\ / CTRL+D
+# - << EOF + CTRLC : echo $? doit renvoyer 128 + 2 : 130
+# - wildcard comme node unique : afficher une erreur specifique
+# - ajouter une globale pour les signaux dans les pipes !
+# - mkdir a / cd a / chmod 000 ./ cd .. : doit revenir en arriere en trimmant le dernier /.../ du pwd
+# - signaux : un CTRL + C dans un prompt puis des entrees normaux : on garde l'exit code 130 !!!
+# - signaux : volatile et atomic a vire si pas justifie
+# - virer ?=0
 #
 #prompt :
 # des tabulatations CTRL + M et Tab ? demander a Sammy
@@ -70,6 +77,17 @@ TIMEOUT_DURATION="${TIMEOUT_DURATION:-10}"
 #
 # combo : pipes redirs && epands
 #
+# contribution list : 
+# - niroched
+# - abidolet
+# - jportier
+# - ehosta
+# - tom 
+# - pnassaen
+# - jmagand
+# - Cyberwan
+# - Thyanoui
+# - Sammouche
 #
 #
 echo 
@@ -170,6 +188,8 @@ recipes "--leaks" "export EXIT=\"123\"" "exit \$EXIT"
 
 echo -e "${YELLOW}export$NC"
 echo
+#Tom tests : 
+recipes "--leaks" "export fdsfds fsdfdf 8 sdfsf"
 # Abidolet tests :
 recipes "--leaks" "export VAR=VAR @=VAR VAR1=VAR1 @=RAV" 
 recipes "--leaks" "export VAR=VAR @=VAR VAR1=VAR1" 
