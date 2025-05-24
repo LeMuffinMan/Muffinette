@@ -357,13 +357,10 @@ fi
 
 # Option redirection : we compare all files available to test redirections
 if [[ $REDIR == 1 ]]; then
-  if [[ $(diff -q "$MINISHELL_OUTFILE" "$BASH_OUTFILE" > /dev/null 2> /dev/null) ]] || 
-    [[ $(diff -q "$MINISHELL_FILE1" "$BASH_FILE1" > /dev/null 2> /dev/null) ]] ||
-    [[ $(diff -q "$MINISHELL_FILE2" "$BASH_FILE2" > /dev/null 2> /dev/null) ]]; then
+  if [[ "$MINISHELL_OUTFILE" != "$BASH_OUTFILE"  ]] || 
+    [[ "$MINISHELL_FILE1" != "$BASH_FILE1" ]] ||
+    [[ "$MINISHELL_FILE2" != "$BASH_FILE2" ]]; then
     echo -e "REDIR > : ${RED}KO${NC}"
-    diff $MINISHELL_OUTFILE $BASH_OUTFILE
-    diff $MINISHELL_FILE1 $BASH_FILE1
-    diff $MINISHELL_FILE2 $BASH_FILE2
     $CLEAN = 1
   else
     echo -e "REDIR > : ${GREEN}OK${NC}"

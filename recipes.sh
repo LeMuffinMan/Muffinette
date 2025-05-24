@@ -54,18 +54,40 @@ TIMEOUT_DURATION="${TIMEOUT_DURATION:-10}"
 # mkdir -p a/b/c; cd a/b/c; rm -rf ../../a; pwd; cd ..; pwd; cd ..; pwd; cd ..; pwd;
 # exit
 # SIGNAUX
-# - dans le prompt
-# - dans un pipe
-# - dans un cat
-# - dans les here_docs
-# - cat | cat | ls : faire un CTRL+C / un CTRL+\ / CTRL+D
-# - << EOF + CTRLC : echo $? doit renvoyer 128 + 2 : 130
+# - done done dans le prompt
+# - done dans un pipe
+# - done dans un cat
+# - done dans les here_docs
+# - done cat | cat | ls : faire un CTRL+C / un CTRL+\ / CTRL+D 
+# - done signaux : un CTRL + C dans un prompt puis des entrees normaux : on garde l'exit code 130 !!!
+# - done << EOF + CTRLC : echo $? doit renvoyer 128 + 2 : 130
+# - done signaux : volatile et atomic a vire si pas justifie
+# - cat | << EOF : CTRL C CTRL \ CTRL D !
+# - << EOF << EOF << EOF : EOF - tout explose
+# - << EOF : ignorer le ctrl + \
+# - << EOF << EOF << EOF : le ctrl + C doit TOUS les fermer 
+# - il faut free dans le child lst_to_array + tokens + hd name + create here _doc + fermer le fd dans le child 
+#
+# Misc
+#
+# - "mv minishell cat" -> /usr/bin/mv: replace '/usr/bin/cat', overriding mode 0755 (rwxr-xr-x)? 
+# - export PATH=$PWD":"$PATH : on a 3 char * au lieu de deux
+# - si on a un binaire cat a deux endroits, qu'on a un permission denied sur le premier path, il faut aller checker les autres paths 
+# - export a="o hello" /  ech$a : doit afficher hello (seb : d'abord expand, puis reparser et retokenizer")
+# - decider pour le declare -x de export
+#
 # - wildcard comme node unique : afficher une erreur specifique
-# - ajouter une globale pour les signaux dans les pipes !
-# - mkdir a / cd a / chmod 000 ./ cd .. : doit revenir en arriere en trimmant le dernier /.../ du pwd
-# - signaux : un CTRL + C dans un prompt puis des entrees normaux : on garde l'exit code 130 !!!
-# - signaux : volatile et atomic a vire si pas justifie
+# - done mkdir a / cd a / chmod 000 ./ cd .. : doit revenir en arriere en trimmant le dernier /.../ du pwd
 # - virer ?=0
+# - redir qui ecris dans deux fichiers avec deux redirs : arbre est plus comme avant, la derniere redir est a droite normalement, la elle est la premiere a gauche
+# - env -i : builtins pas reperes ? (env)
+# - echo $ devrait afficher $ seulement
+# - syntax error qui chie si tu mets des quotes a cheval 
+#    - si on met des pipes : syntax error sur le pipe : echo | "d" | ""
+#    -  echo test lol && 'echo' $? || echo trololo : 'echo' mal interprete
+# - unset PWD + cd : segfault
+# - echo test lol : affiche sans espace !
+# - export HOL}A=bonjour ET export H`OLA=BONJOUR
 #
 #prompt :
 # des tabulatations CTRL + M et Tab ? demander a Sammy
@@ -88,6 +110,9 @@ TIMEOUT_DURATION="${TIMEOUT_DURATION:-10}"
 # - Cyberwan
 # - Thyanoui
 # - Sammouche
+# - secros
+# - ibon
+# - tsofien
 #
 #
 echo 
@@ -409,3 +434,14 @@ recipes "--leaks" "< log/infile .."
 
 recipes "--leaks" "mkdir a" "mkdir b" "cd a" "cd ../b" "rm -rf ../a" "cd -" "rm -rf ../b" 
 # recipes "--leaks" "cd | pwd | exit | export VAR=VAR | export | grep VAR | unset VAR | exprot | grep VAR | cd .. | cd / | exit" 
+recipes "--leaks" "echo -nn o" 
+recipes "--leaks" "echo -n -nna a" 
+recipes "--leaks" "export TEST" "export | grep TEST" 
+recipes "--leaks" "-r" "export PATH=\$PWD\":\"\$PATH" 
+recipes "--leaks" "-r" "export a=\"o hello\"" "ech\$a" 
+recipes "--leaks" "-r" "echo \$" 
+recipes "--leaks" "-r" "echo | \"d\" | \"\"" 
+recipes "--leaks" "-r" "unset PWD" "cd " 
+recipes "--leaks" "-r" "echo test lol" 
+recipes "--leaks" "-r" "export HOL}A=bonjour" 
+recipes "--leaks" "-r" "HO\`LA=bonjour" 
