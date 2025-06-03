@@ -46,7 +46,13 @@ TIMEOUT_DURATION="${TIMEOUT_DURATION:-10}"
 #
 #Manual tests
 # 
+# mninishell
+# ./minishell
+# CTRL + D 
+#
 # env sans args ou options 
+#
+# ! puis echo $? devrait donner 1 ...
 #
 # run a random test manualy :
 # cat recipes.sh | grep "recipes \"--leaks\"" | shuf -n 1 | sed "s/recipes \"--leaks\" //g" | sed "s/\"//g"
@@ -440,9 +446,6 @@ recipes "export a=\"whoami | cat -e\"" "echo \$a" "\$a"
 echo 
 echo -e "${YELLOW}basics$NC"
 echo 
-echo
-echo -e  "${YELLOW}TO FIX$NC"
-echo
 recipes "echo \$" 
 recipes "unset PWD" "cd " 
 recipes  "echo test lol" 
@@ -474,3 +477,53 @@ recipes "ls|ls"
 recipes "-r" "echo>log/outfile" 
 recipes "-r" "echo \"'\$USER'\"" 
 recipes "-r" "ls < > log/outfile" 
+recipes "/////////ls" 
+recipes "minishell" 
+recipes "/" 
+recipes "/./../../../../.." 
+recipes "-" 
+recipes "\"\"''echo hola\"\"'''' que\"\"'' tal\"\"''" 
+recipes "echo \$? | echo \$? | echo \$?" 
+recipes "echo > <" 
+recipes "echo | |" 
+recipes "echo \$*" 
+recipes "echo '\$''''" 
+recipes "echo \"\$HO\"ME" 
+recipes "echo \"\$HO\"\"ME\"" 
+recipes "echo \"'\$HO''ME'\"" 
+recipes "echo hola\"\"\"\"\"\"\"\"\"\"\"\"" 
+recipes "echo hola''''''''''''" 
+recipes "e\"cho hola\"" 
+recipes "echo \"hola     \" | cat -e" 
+recipes "\"e\"'c'ho 'b'\"o\"nj\"o\"'u'r" 
+recipes "\"\"e\"'c'ho 'b'\"o\"nj\"o\"'u'r\"" 
+recipes "echo \"\$DONTEXIST\"Makefile" 
+recipes "\$?" 
+recipes "\$?\$?" 
+recipes "?\$HOME" 
+recipes "\$HOMEdskjhfkdshfsd" 
+recipes "echo \"\$\"\"\"" 
+recipes "\$NOTAVAR" 
+echo 
+echo -e  "${YELLOW}Mandatory ?$NC"
+echo 
+recipes "\"\"" 
+recipes "echo \$\"\"" 
+recipes "echo \"\" \$HOME" 
+recipes "./minishell" 
+recipes "echo \$?\$" 
+recipes "echo \$:\$= | cat -e" 
+recipes "echo \" \$ \" | cat -e" 
+recipes "echo \$USER\$var\\\$USER\$USER\\\$USERtest\$USER" 
+recipes "echo '*'" 
+recipes "echo *" 
+recipes "echo t*" 
+recipes "echo \$hola*" 
+recipes "echo hola*hola *" 
+recipes "echo \$HOME*" 
+recipes "echo \$\"HOME\"" 
+recipes "echo \$''HOME" 
+recipes "echo \"'\"h'o'la\"'\"" 
+recipes "echo '''ho\"''''l\"a'''" 
+recipes "\$HOME" 
+recipes "echo *\".supp\"" 
