@@ -504,6 +504,7 @@ recipes "--leaks" "?\$HOME"
 recipes "--leaks" "\$HOMEdskjhfkdshfsd" 
 recipes "--leaks" "echo \"\$\"\"\"" 
 recipes "--leaks" "\$NOTAVAR" 
+recipes "--leaks" "echo *\".supp\"" 
 echo 
 echo -e  "${YELLOW}Mandatory ?$NC"
 echo 
@@ -526,4 +527,3 @@ recipes "--leaks" "echo \$''HOME"
 recipes "--leaks" "echo \"'\"h'o'la\"'\"" 
 recipes "--leaks" "echo '''ho\"''''l\"a'''" 
 recipes "--leaks" "\$HOME" 
-recipes "--leaks" "echo *\".supp\"" 
