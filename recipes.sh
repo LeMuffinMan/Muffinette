@@ -117,6 +117,7 @@ TIMEOUT_DURATION="${TIMEOUT_DURATION:-10}"
 # - secros
 # - ibon
 # - tsofien
+# - karamiro
 #
 #
 
@@ -530,4 +531,4 @@ recipes "echo \$''HOME"
 recipes "echo \"'\"h'o'la\"'\"" 
 recipes "echo '''ho\"''''l\"a'''" 
 recipes "\$HOME" 
-
+recipes "mkdir a && cd a && mkdir b && cd b && mkdir c && cd c" "cd ../../../ && rm -rf a" 
