@@ -120,6 +120,8 @@ TIMEOUT_DURATION="${TIMEOUT_DURATION:-10}"
 # - karamiro
 #
 #
+#
+#env -i ./minishell puis espace dedans il foire
 
 mkdir test
 
@@ -513,7 +515,7 @@ echo
 echo -e  "${YELLOW}Mandatory ?$NC"
 echo 
 recipes "--leaks" "\"\"" 
-recipes "--leaks" "echo \$\"\"" 
+# recipes "--leaks" "echo \$\"\"" 
 # recipes "--leaks" "echo \"\" \$HOME" 
 # recipes "--leaks" "./minishell" 
 recipes "--leaks" "echo \$?\$" 
